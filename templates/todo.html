@@ -1,27 +1,104 @@
-{% load static%}
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <link rel="stylesheet" href={% static "css/todo.css" %}/>
-    <title>Todo</title>
+    <link rel="stylesheet" href="{% static 'css/todo.css' %}">
+    <title>Todo App</title>
 </head>
 <body>
+
     <div id="main">
-            <h1>Hi everyone! This is a todo app</h1>
-            <div class="input-list">
-                <label>Add Task </label>
-                <input type="text" placeholder="Add a task..." class="inp-field">
-                <button type="submit">Add task</button> 
-            </div>
-            <div>
-                <ul>
-                    <li>Buy grocerries</li>
-                    <li> Go to gym</li>
-                    <li> Complete the project</li>
-                </ul>
-            </div>
+        <h1>Todo App</h1>
+
+        <div class="input-list">
+            <input type="text" id="taskInput" placeholder="Add a new task..." class="inp-field">
+            <button type="button" onclick="addTask()">Add</button>
+        </div>
+
+        <!-- Ongoing Task Section -->
+        <div class="section">
+            <h2>Ongoing Tasks</h2>
+            <div id="ongoingPlaceholder" class="placeholder">No ongoing tasks.</div>
+            <ul id="ongoingList"></ul>
+        </div>
+
+        <!-- Completed Task Section -->
+        <div class="section">
+            <h2>Completed Tasks</h2>
+            <div id="completedPlaceholder" class="placeholder">No completed tasks.</div>
+            <ul id="completedList"></ul>
+        </div>
     </div>
+
+    <script>
+        const taskInput = document.getElementById('taskInput');
+        const ongoingList = document.getElementById('ongoingList');
+        const completedList = document.getElementById('completedList');
+        const ongoingPlaceholder = document.getElementById('ongoingPlaceholder');
+        const completedPlaceholder = document.getElementById('completedPlaceholder');
+
+        function updatePlaceholders() {
+            ongoingPlaceholder.style.display = ongoingList.children.length === 0 ? 'block' : 'none';
+            completedPlaceholder.style.display = completedList.children.length === 0 ? 'block' : 'none';
+        }
+
+        function addTask() {
+            const taskText = taskInput.value.trim();
+            if (taskText === '') {
+                alert('Please enter a task');
+                return;
+            }
+
+            const li = document.createElement('li');
+            li.innerHTML = `
+                <span>${taskText}</span>
+                <div class="actions">
+                    <button class="done-btn" onclick="markDone(this)">✔ Done</button>
+                    <button class="delete-btn" onclick="deleteTask(this)">✖ Delete</button>
+                </div>
+            `;
+
+            ongoingList.appendChild(li);
+            taskInput.value = '';
+            updatePlaceholders();
+        }
+
+        function deleteTask(button) {
+            const li = button.parentElement.parentElement;
+            li.remove();
+            updatePlaceholders();
+        }
+
+        function markDone(button) {
+            const li = button.parentElement.parentElement;
+            li.querySelector('.actions').innerHTML = `
+                <button class="undone-btn" onclick="markUndone(this)">↩ Undone</button>
+                <button class="delete-btn" onclick="deleteTask(this)">✖ Delete</button>
+            `;
+            completedList.appendChild(li);
+            updatePlaceholders();
+        }
+
+        function markUndone(button) {
+            const li = button.parentElement.parentElement;
+            li.querySelector('.actions').innerHTML = `
+                <button class="done-btn" onclick="markDone(this)">✔ Done</button>
+                <button class="delete-btn" onclick="deleteTask(this)">✖ Delete</button>
+            `;
+            ongoingList.appendChild(li);
+            updatePlaceholders();
+        }
+
+        taskInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                addTask();
+            }
+        });
+
+        // Initialize placeholder visibility
+        updatePlaceholders();
+    </script>
 
 </body>
 </html>
