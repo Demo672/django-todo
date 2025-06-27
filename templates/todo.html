@@ -1,14 +1,16 @@
+{% load static%}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Sign In</title>
+    <link rel="stylesheet" href={% static "css/todo.css" %}/>
+    <title>Todo</title>
 </head>
 <body>
     <div id="main">
             <h1>Hi everyone! This is a todo app</h1>
             <div class="input-list">
-                <label>Add Task </label><br><br>
+                <label>Add Task </label>
                 <input type="text" placeholder="Add a task..." class="inp-field">
                 <button type="submit">Add task</button> 
             </div>
